@@ -1,0 +1,5 @@
+is_terminating_punctuator('x'): 0
+is_terminating_punctuator('Y'): 0
+is_terminating_punctuator('@'): 0
+is_terminating_punctuator('#'): 0
+is_terminating_punctuator('?'): 1

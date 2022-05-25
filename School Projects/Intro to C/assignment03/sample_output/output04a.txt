@@ -1,0 +1,7 @@
+Before sorting:
+x = 43, y = 2, z = 43
+
+After sorting:
+x = 43, y = 43, z = 2
+
+Hooray!

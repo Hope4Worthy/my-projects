@@ -1,0 +1,27 @@
+01/01 (NOT in a leap year): Day 1
+01/31 (NOT in a leap year): Day 31
+02/01 (NOT in a leap year): Day 32
+02/28 (NOT in a leap year): Day 59
+03/01 (NOT in a leap year): Day 60
+03/15 (NOT in a leap year): Day 74
+12/31 (NOT in a leap year): Day 365
+
+12/32 (NOT in a leap year): Day -1
+13/15 (NOT in a leap year): Day -1
+00/15 (NOT in a leap year): Day -1
+02/29 (NOT in a leap year): Day -1
+
+01/01 (in a leap year): Day 1
+01/31 (in a leap year): Day 31
+02/01 (in a leap year): Day 32
+02/28 (in a leap year): Day 59
+03/01 (in a leap year): Day 61
+03/15 (in a leap year): Day 75
+12/31 (in a leap year): Day 366
+
+12/32 (in a leap year): Day -1
+13/15 (in a leap year): Day -1
+00/15 (in a leap year): Day -1
+02/29 (in a leap year): Day 60
+
+Hooray! (This will print even if you're not getting the correct results.)

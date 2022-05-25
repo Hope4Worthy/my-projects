@@ -1,0 +1,9 @@
+January 1st is the 1st day of the year.
+January 31st is the 31st day of the year.
+February 1st is the 32nd day of the year.
+February 28th is the 59th day of the year.
+March 1st is the 60th day of the year.
+March 15th is the 74th day of the year.
+December 31st is the 365th day of the year.
+
+Hooray! (This will print even if you're not getting the correct results.)

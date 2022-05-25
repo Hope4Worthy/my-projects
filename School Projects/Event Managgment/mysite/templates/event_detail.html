@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% block content %}
+{% load crispy_forms_tags %}
+{% load has_group %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 card mb-4  mt-3 left  top">
+      <div class="card-body">
+        <h1>{% block name %} {{ event.name }} {% endblock name %}</h1>
+        <p class=" text-muted">
+          {% if event.host %}
+            {{ event.host }} 
+          {% else %}
+            {{ event.university }}
+          {% endif%}
+          </p>
+        <p class="text-muted"> {{event.day}} : {{event.start_time}} - {{event.end_time}}</p>
+        <p class="card-text"> {{ event.location }} </p>
+        <p class="card-text"> {{ event.description | safe }} </p>
+        {% if event.status == 1 %}
+          {% if request.user in event.atendee.all %}
+          <a href="{% url 'event_leave' event.pk %}", class="btn btn-primary btn-sm"> leave </a>
+          {% else %}
+           <a href="{% url 'event_join' event.pk %}", class="btn btn-primary btn-sm"> join </a>
+          {% endif %}
+        {% else %}
+          <a href="{% url 'event_verify' event.pk %}", class="btn btn-primary btn-sm"> Verify </a>
+        {% endif %}
+        {% if request.user == event.creator %} 
+          <a href="{% url 'event_edit' event.pk %}", class="btn btn-primary btn-sm"> Edit </a>
+          <a href="{% url 'event_delete' event.pk %}",  class="btn btn-danger btn-sm"> Delete </a>
+        {% endif %}
+      </div>
+      <hr>
+        <h2> Comments </h2>
+        {% if not request.user|has_comment:event.comments.all%}
+          <a href="{% url 'comment_add' event.pk %}", class="btn btn-primary"> Add Comment </a>
+        {% endif %}
+        <hr>
+        <br/>
+        {% if not event.comments.all %}
+        <div class="card mb-4">
+          <div class="card-body">
+              <h4 class="card-name"> No Comments </h4>
+          </div>
+      </div>
+        {% else %}
+          {% for comment in event.comments.all %}
+          <div class="card mb-4">
+            <div class="card-body">
+                <h4 class="card-name"> {{ comment.name }} </h4>
+                <p class="card-text text-muted h6"> {{ comment.author }} | {{ comment.created_on}} </p>
+                <p class="card-text"> rating: {{comment.rating}} </p>
+                <p class="card-text"> {{comment.body|slice:":200" }} </p>
+                {% if comment.author == request.user %}
+                  <a href="{% url 'comment_delete' epk=event.pk cpk=comment.pk %}", class="btn btn-primary btn-sm"> Delete Comment </a>
+                  <a href="{% url 'comment_edit' pk=comment.pk %}", class="btn btn-primary btn-sm"> Edit Comment </a>
+                {% endif %}
+            </div>
+        </div>
+          {% endfor %}
+        {% endif %}
+
+
+    </div>
+  </div>
+</div>
+{% endblock content %}

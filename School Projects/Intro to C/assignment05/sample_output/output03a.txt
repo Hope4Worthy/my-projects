@@ -1,0 +1,4 @@
+Bobo (2 occurrences of 'o')
+Harry (0 occurrences of 'o')
+Potter (1 occurrence of 'o')
+broom (2 occurrences of 'o')

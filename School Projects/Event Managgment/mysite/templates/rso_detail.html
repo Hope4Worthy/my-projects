@@ -1,0 +1,27 @@
+{% extends 'base.html' %} {% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 card mb-4  mt-3 left  top">
+      <div class="card-body">
+        <h1> {% block name %} {{ rso.name }} {% endblock name %} </h1>
+        <p class="text-muted"> {{ rso.university.name }} | {{ rso.owner }} </p>
+        <p class="text-muted"> {{ rso.status }} </p>
+        <p closs="text-muted"> members: {{ rso.numberOfMembers }} </p>
+        <p class="card-text "> {{ rso.description | safe }} </p>
+        {% if request.user in rso.students.all %}
+          <a href="{% url 'rso_leave' rso.pk %}", class="btn btn-primary btn-sm"> Leave </a>
+        {% else %}
+          <a href="{% url 'rso_join' rso.pk %}", class="btn btn-primary btn-sm"> Join </a>
+        {% endif %}
+        
+        {% if request.user == rso.owner %}
+          <a href="{% url 'rso_edit' rso.pk %}", class="btn btn-primary btn-sm"> Edit </a>
+          <a href="{% url 'rso_delete' rso.pk %}",  class="btn btn-danger btn-sm"> Delete </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

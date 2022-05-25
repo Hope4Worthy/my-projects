@@ -1,0 +1,10 @@
+12
+12
+12
+13
+13
+13
+13
+0
+
+Hooray! (This will print even if you're not getting the correct results.)

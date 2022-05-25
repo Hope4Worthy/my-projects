@@ -1,0 +1,5 @@
+Pancakes per minute: 300.000
+Pancakes per minute: 0.300
+Pancakes per minute: 9.200
+
+Hooray!

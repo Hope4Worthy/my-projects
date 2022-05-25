@@ -1,0 +1,4 @@
+Name: Jo Mama
+Pancakes Consumed: 3.522
+Pancakes Per Minute: 0.126
+Minutes Spent Munching: 28.000

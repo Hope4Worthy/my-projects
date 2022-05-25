@@ -1,0 +1,7 @@
+Pancakes consumed: 211.600
+
+Pancakes per minute: 9.200
+
+Minutes spent munching: 23.000
+
+Hooray! (This will print even if you're not getting the correct results.)

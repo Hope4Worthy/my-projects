@@ -1,0 +1,13 @@
+Source Struct:
+==============
+Name: Jo Mama
+Pancakes Consumed: 3.502
+Pancakes Per Minute: 0.070
+Minutes Spent Munching: 50.012
+
+Newly Allocated (Destination) Struct:
+=====================================
+Name: Jo Mama
+Pancakes Consumed: 3.502
+Pancakes Per Minute: 0.070
+Minutes Spent Munching: 50.012

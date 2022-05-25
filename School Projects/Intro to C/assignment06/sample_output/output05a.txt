@@ -1,0 +1,13 @@
+Source Struct:
+==============
+Name: Bo Bobbity Frank
+Pancakes Consumed: 23.394
+Pancakes Per Minute: 2.100
+Minutes Spent Munching: 11.140
+
+Newly Allocated (Destination) Struct:
+=====================================
+Name: Bo Bobbity Frank
+Pancakes Consumed: 23.394
+Pancakes Per Minute: 2.100
+Minutes Spent Munching: 11.140

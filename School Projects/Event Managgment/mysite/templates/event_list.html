@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+{% load has_group %}
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+        font-size: 18px;
+        background-color: #fdfdfd;
+    }
+
+    .head_text {
+        color: white;
+    }
+
+    .card {
+        box-shadow: 0 16px 48px #E3E7EB;
+    }
+</style>
+
+<header class="masthead">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h3 class=" site-heading my-4 mt-3 text-white"> All Active Events </h3>
+                    {% if request.user|has_group:"admin" or request.user|has_group:"superAdmin" %}
+                            <a class="btn btn-secondary" href="{% url 'event_add' %}"> Add Event </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    <div class="row">
+        <!-- Blog Entries Column -->
+        <div class="col-md-8 mt-3 left">
+            {% for event in event_list %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-name"> {{ event.name }} </h2>
+                    <p class="card-text text-muted h6"> {{ event.author }} | {{ event.created_on}} | {{event.event_type}} </p>
+                    <p class="card-text"> {{event.content|slice:":200" }} </p>
+                    <a href="{% url 'event_detail' event.pk  %}" class="btn btn-primary"> Details </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{%endblock%}

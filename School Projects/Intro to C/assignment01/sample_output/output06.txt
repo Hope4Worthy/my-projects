@@ -1,0 +1,5 @@
+Pancakes consumed: 600.000
+Pancakes consumed: 12.000
+Pancakes consumed: 211.600
+
+Hooray!

@@ -1,0 +1,4 @@
+is_consonant('9'): 0
+is_consonant('.'): 0
+is_consonant(' '): 0
+is_consonant('T'): 1

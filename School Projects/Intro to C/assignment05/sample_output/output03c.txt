@@ -1,0 +1,3 @@
+The next string is empty. (4 occurrences of ' ')
+ (0 occurrences of ' ')
+This is the last string in the array. (7 occurrences of ' ')

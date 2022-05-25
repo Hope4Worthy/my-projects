@@ -1,0 +1,13 @@
+Source Struct:
+==============
+Name: Low Key Covfefe
+Pancakes Consumed: 3.522
+Pancakes Per Minute: 0.126
+Minutes Spent Munching: 28.000
+
+Newly Allocated (Destination) Struct:
+=====================================
+Name: Low Key Covfefe
+Pancakes Consumed: 3.522
+Pancakes Per Minute: 0.126
+Minutes Spent Munching: 28.000
