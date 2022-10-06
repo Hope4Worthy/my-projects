@@ -1,4 +1,4 @@
-Written by: name
+Written by: Brantley Deines
 
 written for:
 COP3402-21Fall 0001
@@ -16,6 +16,6 @@ EX: "./a.out test1.txt -l -a -s -v"
 
 driver.c and compiler.h where provided as a part of the project and were not modified
 
-MakeFile was prowided in HW3 and madifed to work for this project
+MakeFile was provided in HW3 and modifed to work for this project
 	- changed vm.o to vm.c
 	- change lex.o to lex.c
