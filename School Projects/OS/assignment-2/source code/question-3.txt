@@ -1,0 +1,28 @@
+==13475== Memcheck, a memory error detector
+==13475== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==13475== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==13475== Command: ./question-1
+==13475== 
+==13475== Invalid read of size 4
+==13475==    at 0x109161: main (in /home/brantley/Documents/my-projects/School Projects/OS/pa2/question-1)
+==13475==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==13475== 
+==13475== 
+==13475== Process terminating with default action of signal 11 (SIGSEGV)
+==13475==  Access not within mapped region at address 0x0
+==13475==    at 0x109161: main (in /home/brantley/Documents/my-projects/School Projects/OS/pa2/question-1)
+==13475==  If you believe this happened as a result of a stack
+==13475==  overflow in your program's main thread (unlikely but
+==13475==  possible), you can try to increase the size of the
+==13475==  main thread stack using the --main-stacksize= flag.
+==13475==  The main thread stack size used in this run was 8388608.
+==13475== 
+==13475== HEAP SUMMARY:
+==13475==     in use at exit: 0 bytes in 0 blocks
+==13475==   total heap usage: 0 allocs, 0 frees, 0 bytes allocated
+==13475== 
+==13475== All heap blocks were freed -- no leaks are possible
+==13475== 
+==13475== For lists of detected and suppressed errors, rerun with: -s
+==13475== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+Segmentation fault (core dumped)
