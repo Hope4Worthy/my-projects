@@ -9,11 +9,10 @@ import numpy as np
 from itertools import chain
 
 import os
-import openpyxl #only needed if running in windows
+import openpyxl
 
 # ---------- GLOBALS ---------- #
 # active caculation flags
-embroidery_calc_flag = False
 screen_print_calc_flag = False
 
 # position values for object placment
@@ -23,24 +22,20 @@ label_x = 20
 entry_x = 250
 
 # font data
-font_data = ("Calibri", 15)
+font_data = ("Calibri", 12)
 
 # input file types
 filetypes = (("Excel files", ("*xlsx", "*xls")), ("All files", "*.*"))
 
 # pricing boundry matricies
-screen_print_boundry = [23, 47, 71, 143, 287, 572, 1199, 1200]
-embroidery_boundry = [1, 5, 11, 23, 47, 71, 143, 287, 575]
+screen_print_boundry = [23, 47, 71, 143, 287, 575, 1199, 1200]
 
 # pricing multipliet matricies
 screen_print_mult = []
-embroidery_mult = []
 
 # pricing table matricies
 screen_print_price = [[]]
-embroidery_price = [[]]
-supplied_embroidery_price = [[]]
-
+jumbo_print_price = [[]]
 
 # ---------- GET INPUT FILE ---------- #
 # get pricing file location from stored location
@@ -61,7 +56,7 @@ if os.path.exists(pricingFilePath) == False:
 # create window
 win = Tk()
 win.title("Shirt Price Calculator")
-win.geometry("920x550")
+win.geometry("920x650")
 
 # set font for tabs
 s = ttk.Style()
@@ -72,13 +67,10 @@ tab_control = ttk.Notebook(win)
 
 home_tab = ttk.Frame(tab_control)
 screen_print_tab = ttk.Frame(tab_control)
-embroidery_tab = ttk.Frame(tab_control)
 
 tab_control.add(home_tab, text="Home")
 tab_control.add(screen_print_tab, text="Screen Printing")
-tab_control.add(embroidery_tab, text="Embroidery")
 
-# ---------- OBJECT CLASSES ---------- #
 class seperator:
     def __init__(self, tab, location=460):
         self.seperator = ttk.Separator(tab, orient="vertical")
@@ -104,7 +96,7 @@ class LabeledCheckbox:
         except:
             return 0
 
-class LabeledCombobox:
+class LabeledCombobox_int:
     def __init__(self, tab, label_text, widget_num, value_list, initital_value, width):
         self.value = IntVar(value=initital_value)
         self.label = ttk.Label(tab, text=label_text, font=font_data)
@@ -118,6 +110,41 @@ class LabeledCombobox:
     def get_value(self):
         try:
             return self.object.get()
+        except:
+            return 0
+
+class LabeledCombobox_str:
+    def __init__(self, tab, label_text, widget_num, value_list, initital_value, width):
+        self.value = StringVar(value=value_list[initital_value])
+        self.label = ttk.Label(tab, text=label_text, font=font_data)
+        self.object = ttk.Combobox(tab, textvariable=self.value, values=value_list, width=width, font=font_data)
+        self.y_pos = initital_offset + (y_offset * (widget_num - 1))
+
+    def place(self):
+        self.label.place(x=label_x, y=self.y_pos)
+        self.object.place(x=entry_x, y=self.y_pos)
+
+    def get_value(self):
+        try:
+            
+            return self.object.get()
+        except:
+            return 0
+
+class LabeledSpinBox:
+    def __init__(self, tab, label_text, widget_num, min_value, max_value, initital_value, width):
+        self.value = IntVar(value=initital_value)
+        self.label = ttk.Label(tab, text=label_text, font=font_data)
+        self.object = ttk.Spinbox(tab, from_= min_value, to = max_value, textvariable=self.value, width=width, font=font_data)
+        self.y_pos = initital_offset + (y_offset * (widget_num - 1))
+
+    def place(self):
+        self.label.place(x=label_x, y=self.y_pos)
+        self.object.place(x=entry_x, y=self.y_pos)
+
+    def get_value(self):
+        try:
+            return int(self.object.get())
         except:
             return 0
 
@@ -140,14 +167,11 @@ class LabeledEntrybox:
         return val
 
 class ColorLocation:
-    # avabile numbe of colors based on number ordered
-    avalable_colors_1 = ("1", "2", "3")
-    avalable_colors_2 = ("1", "2", "3", "4", "5")
-    avalable_colors_3 = ("1", "2", "3", "4", "5", "6", "7", "8")
+    special_inks = ("Standard", "Shimmer", "Cristilina", "Glimmer", "Glow")
 
     def __init__(self, tab, header_text, location_num):
         # value varriables
-        self.special_value = DoubleVar(value=0.00)
+        self.special_value = StringVar(value="Standard")
         self.color_value = IntVar(value=0)
 
         # seperator object
@@ -156,41 +180,56 @@ class ColorLocation:
         # label objects
         self.header_label = ttk.Label(tab, text=header_text, font=font_data)
         self.color_label = ttk.Label(tab, text="Number of Colors", font=font_data)
-        self.special_label = ttk.Label(tab, text="Special Ink", font=font_data)
+        self.special_label = ttk.Label(tab, text="Ink Type", font=font_data)
 
         # entry objects
-        self.color_select = ttk.Combobox(tab, textvariable=self.color_value, width=13, font=font_data)
-        self.special_check = ttk.Checkbutton(tab, variable=self.special_value, onvalue=0.25, offvalue=0)
+        self.color_select = ttk.Spinbox(tab,from_ = 1, to = 3, textvariable=self.color_value, width=13, font=font_data)
+        self.special_select = ttk.Combobox(tab, textvariable=self.special_value, width=13, font=font_data)
 
         # varriables for placement location
-        self.row = 3 * (location_num - 1)
+        self.row = 4 * (location_num - 1)
         self.sep_flag = location_num > 1
         self.sep_y = 115 * (location_num - 1)
 
     def place(self, num_ordered):
         # select list to be used based in number of shirts ordered
         if num_ordered <= screen_print_boundry[0]:
-            self.color_select.config(values=self.avalable_colors_1)
+            max_value = 3
         elif num_ordered <= screen_print_boundry[1]:
-            self.color_select.config(values=self.avalable_colors_2)
+            max_value = 5
+        elif num_ordered <= screen_print_boundry[2]:
+            max_value = 8
+        elif num_ordered <= screen_print_boundry[3]:
+            max_value = 11
         else:
-            self.color_select.config(values=self.avalable_colors_3)
+            max_value = 13
+
+        self.special_select.config(values=self.special_inks)
+        self.color_select.config(to=max_value)
 
         # set initial values
-        self.color_value.set(1)
-        self.special_value.set(0.00)
+        if self.color_value.get() == 0:
+            self.color_value.set(1)
+        else:
+            self.color_value.set(self.color_value.get())
+        self.special_value.set("Standard")
 
-        # place objects
-        self.header_label.grid(row=self.row, column=2, padx=0, pady=10, sticky="w")
-
-        self.color_label.grid(row=self.row + 1, column=1, padx=10, pady=2, sticky="w")
-        self.color_select.grid(row=self.row + 1, column=2, padx=25, pady=2, sticky="w")
-
-        self.special_label.grid(row=self.row + 2, column=1, padx=10, pady=2, sticky="w")
-        self.special_check.grid(row=self.row + 2, column=2, padx=25, pady=2, sticky="w")
+        y_pad = 11
 
         if self.sep_flag:
-            self.seperator.place(y=self.sep_y, x=460, height=0.2, relwidth=0.5)
+            self.seperator.grid(row=self.row, column=1, columnspan=20, sticky='w', pady=y_pad, ipadx=300)
+
+        # place objects
+        if not self.sep_flag:
+            self.header_label.grid(row=self.row + 1, column=2, padx=0, pady=0, sticky="w")
+        else:
+            self.header_label.grid(row=self.row + 1, column=2, padx=0, pady=y_pad, sticky="w")
+
+        self.color_label.grid(row=self.row + 2, column=1, padx=10, pady=y_pad, sticky="w")
+        self.color_select.grid(row=self.row + 2, column=2, padx=25, pady=y_pad, sticky="w")
+
+        self.special_label.grid(row=self.row + 3, column=1, padx=10, pady=y_pad, sticky="w")
+        self.special_select.grid(row=self.row + 3, column=2, padx=25, pady=y_pad, sticky="w")
 
     def destroy(self):
         # clear values
@@ -206,41 +245,94 @@ class ColorLocation:
         self.color_select.grid_forget()
 
         self.special_label.grid_forget()
-        self.special_check.grid_forget()
+        self.special_select.grid_forget()
 
-    def get_price(self, index):
-        if int(self.color_value.get()) == 0:
+    def get_price(self, index, print_type):
+        value = int(self.color_select.get())
+
+        if value == 0:
             return 0
 
-        return self.special_value.get() + screen_print_price[int(self.color_value.get()) - 1][index]
+        ink_type = self.special_value.get()
+        if ink_type == self.special_inks[0]:
+            ink_price = 0
+        elif ink_type == self.special_inks[1] or ink_type == self.special_inks[2] or ink_type == self.special_inks[3]:
+            ink_price = 0.25
+        else:
+            ink_price = 0.50
+
+        if print_type == "Jumbo":
+            if type(jumbo_print_price[value - 1][index]) is float:
+                return jumbo_print_price[value - 1][index] + ink_price
+            else:
+                return 0
+        else:
+            if type(screen_print_price[value - 1][index]) is float:
+                return screen_print_price[value - 1][index] + ink_price
+            else:
+                return 0
+
+class PocketPrint:
+    def __init__(self, tab, label_text, widget_num):
+        self.value_check = DoubleVar(value=0)
+        self.value_spin = IntVar(value=1)
+        self.label = ttk.Label(tab, text=label_text, font=font_data)
+        self.spin_label = ttk.Label(tab, text="Colors:", font=font_data)
+        self.object_check = ttk.Checkbutton(tab, variable=self.value_check, onvalue=0.35, offvalue=0)
+        self.object_spin = ttk.Spinbox(tab, from_= 1, to = 3, textvariable=self.value_spin, width=5, font=font_data)
+        self.y_pos = initital_offset + (y_offset * (widget_num - 1))
+        self.value_check.trace_add('write', self.update_color)
+    
+    def update_color(*args):
+        if args[0].value_check.get() == 0:
+            args[0].object_spin.place_configure(height=0, width=0)
+            args[0].spin_label.place_configure(height=0, width=0)
+        else:
+            args[0].object_spin.place_configure(height=25, width=50)
+            args[0].spin_label.place_configure(height=25, width=75)
+
+    def place(self):
+        self.label.place(x=label_x, y=self.y_pos)
+        self.object_check.place(x=entry_x, y=self.y_pos)
+        self.object_spin.place(x=entry_x+75, y=self.y_pos+30, height=0, width=0)
+        self.spin_label.place(x=entry_x, y=self.y_pos+30, height=0, width=0)
+
+    def get_value(self, index):
+        value_spin = int(self.value_spin.get())
+        value_check = float(self.value_check.get())
+
+        if value_check == 0:
+            return 0
+
+        if type(screen_print_price[value_spin - 1][index]) is float:
+            return screen_print_price[value_spin - 1][index] + value_check
+        else:
+            return 0
 
 # ---------- DATA READ FUNCTION ---------- #
 def read_data():
     global screen_print_mult
     global screen_print_price
-    global embroidery_mult
-    global embroidery_price
-    global supplied_embroidery_price
+    global jumbo_print_price
 
     # collect screen printing data
     data = pd.read_excel(pricingFilePath, "Screen Print")
-    screen_print_mult = list(chain.from_iterable(np.delete(data.loc[14:14, :].values, 0, axis=1)))
-    screen_print_price = np.delete(data.loc[1:8, :].values, 0, axis=1)
+    screen_print_mult = list(chain.from_iterable(np.delete(data.loc[16:16, :].values, 0, axis=1)))
+    screen_print_price = np.delete(data.loc[1:13, :].values, 0, axis=1)
+    i = 0
+    for mult in screen_print_mult:
+        screen_print_mult[i] = mult[mult.rfind('x'):mult.rfind('S')][1:].strip()
+        i += 1
 
-    # collect embroidery data
-    data = pd.read_excel(pricingFilePath, "Embroidery")
-    embroidery_mult = np.delete(data.loc[11:11, :].values, 0)
-    embroidery_price = np.delete(data.loc[1:9, :].values, 0, axis=1)
-
-    # collect supplied embroidery data
-    data = pd.read_excel(pricingFilePath, "Supplied Embroidery")
-    supplied_embroidery_price = np.delete(data.loc[1:9, :].values, 0, axis=1)
+    # collect jumbo screen printing data
+    data = pd.read_excel(pricingFilePath, "Jumbo SP")
+    jumbo_print_price = np.delete(data.loc[1:13, :].values, 0, axis=1)
 
 # ---------- TAB SETUP FUNCTIONS ---------- #
 def home_tab_setup():
     # open image and set properties
     file_path = os.path.dirname(os.path.realpath(__file__)) + "/mag.png"
-    display = ImageTk.PhotoImage(Image.open(file_path).resize((750, 367)))
+    display = ImageTk.PhotoImage(Image.open(file_path).resize((900, 517)))
     image = Label(home_tab, image=display)
     image.image = display
 
@@ -249,31 +341,29 @@ def home_tab_setup():
     text = Label(home_tab, text=message, font=("Calibri", 25))
 
     # place objects
-    image.grid(row=0, column=0)
-    text.grid(row=1, column=0)
+    image.place(x=(920/2) - (900/2), y = 25)
+    text.place(x = 55, y = 567)
 
 def screen_print_tab_setup():
     # ----- LOCAL VARRAIBELS ----- #
     combo_width = 13
-    entry_width = 15
-    num_positions = ("1", "2", "3", "4")
+    entry_width = 13
+
+    printing_options = ("Standard", "Jumbo")
     message = (
-        "This Tab is for Screen Printing Only\n"
-        + "Below are the Pricing Ranges:\n"
-        + "S1   12-24\n"
-        + "S2   24-47\n"
-        + "S3   47-71\n"
-        + "S4   72-143\n"
-        + "S5   144-287\n"
-        + "S6   288-575\n"
-        + "S7   576-1199\n"
-        + "S8   1200+"
+        "Standard printing minimum order quantity 12\n\n"
+        + "Jumbo printing minimum order quantity 48\n"
+        + "Jumbo printing is only on sizes above Adult Medium\n\n"
+        + "Below are the pricing ranges:\n"
+        + "S1   12-23 \t S5   144-287\n"
+        + "S2   24-47 \t S6   288-575\n"
+        + "S3   48-71 \t S7   576-1199\n"
+        + "S4   72-143 \t S8   1200+\n"
     )
 
     # ----- FUNCTIONS ----- #
     def display_color_locations(*args):
-        print('** COLORS **')
-        # colelct inputs
+        # collect inputs
         number_location_value = int(number_locations.get_value())
         number_ordered_value = int(number_ordered.get_value())
 
@@ -303,7 +393,6 @@ def screen_print_tab_setup():
             location_four.place(number_ordered_value)
             return
 
-
     def validate_inputs(*args):
         if screen_print_calc_flag:
             # collect inputs
@@ -311,17 +400,22 @@ def screen_print_tab_setup():
             number_ordered_value = number_ordered.get_value()
 
             if retail_price_value < 0:
-                price.object.delete(0, "end")
-                price.object.insert(END, "INVALID RETAIL PRICE")
-
-            elif number_ordered_value < 12:
-                price.object.delete(0, "end")
-                price.object.insert(END, "INVALID NUMBER ORDERED")
-            elif screen_print_calc_flag == True:
+                retail_price.value.set(0)
+            if printing_type.get_value() == "Standard":
+                if number_ordered_value < 12:
+                    number_ordered.value.set(12)
+            elif printing_type.get_value() == "Jumbo":
+                if number_ordered_value < 48:
+                    number_ordered.value.set(48)
+            if screen_print_calc_flag == True:
                 calculate_price()
         win.after(500, validate_inputs)
 
     def calculate_price():
+        #here to get around python garbage collection
+        printing_type.value.set(printing_type.value.get())
+        printing_type.object.set(printing_type.object.get())
+
         # get updated pricing info
         read_data()
 
@@ -337,20 +431,28 @@ def screen_print_tab_setup():
             index = 7
 
         # calculate and round price
-        price_value = ((retail_price.get_value() * screen_print_mult[index]) + location_one.get_price(index) + location_two.get_price(index) + location_three.get_price(index) + location_four.get_price(index))
+        print_type = printing_type.get_value()
+        price_value = ((retail_price.get_value() * float(screen_print_mult[index])) + location_one.get_price(index, print_type) + location_two.get_price(index, print_type) + location_three.get_price(index, print_type) + location_four.get_price(index, print_type) + pocket.get_value(index))
         price_value = round(price_value, 2)
+        total_value = round(price_value * number_ordered_value, 2)
 
         # display price
-        price.value.set(price_value)
+        price.object.delete(0, "end")
+        price_total.object.delete(0, "end")
+        price.object.insert(END, "%.2f" % price_value)
+        price_total.object.insert(END, "%.2f" % total_value)
 
     # ----- CREATE OBJECTS ----- #
     spacer = ttk.Label(screen_print_tab, text="")
     vertical_seperator = seperator(screen_print_tab)
 
-    retail_price = LabeledEntrybox(screen_print_tab, "Retail Price", 1, 1, entry_width)
-    number_ordered = LabeledEntrybox(screen_print_tab, "Number Ordered", 2, 12, entry_width)
-    number_locations = LabeledCombobox(screen_print_tab, "Number of Locations", 3, num_positions, 1, combo_width)
-    price = LabeledEntrybox(screen_print_tab, "Price", 5, 0, entry_width)
+    printing_type = LabeledCombobox_str(screen_print_tab, "Printing Type", 1, printing_options, 0, combo_width)
+    retail_price = LabeledEntrybox(screen_print_tab, "Retail Price", 2, 1, entry_width)
+    number_ordered = LabeledSpinBox(screen_print_tab, "Number Ordered", 3, 12, 999999, 12, combo_width)
+    number_locations = LabeledSpinBox(screen_print_tab, "Number of Locations", 4, 1,4, 1, combo_width)
+    pocket = PocketPrint(screen_print_tab, "Pocket Printing", 5)
+    price = LabeledEntrybox(screen_print_tab, "Price Per Shirt", 7, 0, entry_width)
+    price_total = LabeledEntrybox(screen_print_tab, "Order Price", 8, 0, entry_width)
 
     details = ttk.Label(screen_print_tab, text=message, font=font_data)
 
@@ -361,119 +463,26 @@ def screen_print_tab_setup():
 
     # ----- Place Objects ----- #
     spacer.grid(row=0, column=0, padx=230)
+    printing_type.place()
     vertical_seperator.place()
     retail_price.place()
     number_ordered.place()
     number_locations.place()
+    pocket.place()
     price.place()
-    details.place(x=label_x, y=275)
+    price_total.place()
+    details.place(x=label_x, y=415)
     location_one.place(12)
 
     # ----- MONITOR VALUES ----- #
-    number_ordered.value.trace("w", display_color_locations)
-    number_locations.value.trace("w", display_color_locations)
+    number_ordered.value.trace_add("write", display_color_locations)
+    number_locations.value.trace_add("write", display_color_locations)
 
     validate_inputs() # validate and calculate every 500ms
-
-def embroidery_tab_setup():
-    # ----- LOCAL VARRIABLES ----- #
-    combo_width = 40
-    entry_width = 15
-    types = ('Text Only', 'Logo', 'Hats', 'Towel', 'Medium Size Over 10,000 Stitches', "Full Size (10.75 x 10.75)", 'Full Size (10.75 x 10.75) Over 50,000 Stitches')
-    message = (
-        "This Tab is for Embroidery Only\n"
-        + "Below are the Pricing Ranges:\n"
-        + "S1   1\n"
-        + "S2   2-5\n"
-        + "S3   6-11\n"
-        + "S4   12-23\n"
-        + "S5   24-47\n"
-        + "S6   48-71\n"
-        + "S7   72-143\n"
-        + "S8   144-287\n"
-        + "S9   288-575"
-    )
-    # ----- FUNCTIONS ----- #
-    def validate_inputs(*args):
-        if embroidery_calc_flag:
-            # collect inputs
-            retail_price_value = retail_price.get_value()
-            number_ordered_value = number_ordered.get_value()
-
-            if retail_price_value < 0:
-                price.object.delete(0, "end")
-                price.object.insert(END, "INVALID RETAIL PRICE")
-
-            elif number_ordered_value < 1:
-                price.object.delete(0, "end")
-                price.object.insert(END, "INVALID NUMBER ORDERED")
-
-            else:
-                calculate_price()
-        win.after(500, validate_inputs)
-
-    def calculate_price():
-        # get updated pricing info
-        read_data()
-
-        # calcuate position on pricing matricies
-        number_ordered_value = int(number_ordered.get_value())
-        index = 0
-        for i in range(len(embroidery_boundry)):
-            if number_ordered_value <= embroidery_boundry[i]:
-                index = i
-                break
-
-        if index > 8:
-            index = 8
-
-        type_value = type_ordered.get_value()
-        type_index = 0
-        if type_value == types[0]: type_index=0
-        elif type_value == types[1]: type_index=1
-        elif type_value == types[2]: type_index=4
-        elif type_value == types[3]: type_index=5
-        elif type_value == types[4]: type_index=6
-        elif type_value == types[5]: type_index=7
-        elif type_value == types[6]: type_index=8
-
-        # calculate and round price
-        if supplied.get_value() == 1:
-            price_value = (retail_price.get_value() * embroidery_mult[index]) + (second_location.get_value() * supplied_embroidery_price[2][index]) + (title.get_value() * supplied_embroidery_price[3][index]) + supplied_embroidery_price[type_index][index]
-        else:
-            price_value = (retail_price.get_value() * embroidery_mult[index]) + (second_location.get_value() * embroidery_price[2][index]) + (title.get_value() * embroidery_price[3][index]) + embroidery_price[type_index][index]
-        price_value = round(price_value, 2)
-
-        # display price
-        price.value.set(price_value)
-
-    # ----- CREATE OBJECTS ----- #
-    supplied = LabeledCheckbox(embroidery_tab, 'Supplied', 1, 0)
-    retail_price = LabeledEntrybox(embroidery_tab, "Retail Price", 2, 1, entry_width)
-    number_ordered = LabeledEntrybox(embroidery_tab, "Number Ordered", 3, 1, entry_width)
-    type_ordered = LabeledCombobox(embroidery_tab, 'Type', 4, types, types[0], combo_width)
-    second_location = LabeledCheckbox(embroidery_tab, 'Second Location', 5, 0)
-    title = LabeledCheckbox(embroidery_tab, 'Name or Title Added', 6, 0)
-    price = LabeledEntrybox(embroidery_tab, "Price", 8, 0, entry_width)
-    details = ttk.Label(embroidery_tab, text=message, font=font_data)
-
-    # ----- Place Objects ----- #
-    supplied.place()
-    retail_price.place()
-    number_ordered.place()
-    type_ordered.place()
-    second_location.place()
-    title.place()
-    price.place()
-    details.place(x = 475, y = 225)
-
-    # ----- MONITOR VALUES ----- #
-    validate_inputs() # validate and caculate every 500ms
 
 # ---------- START TABS ---------- #
 home_tab_setup()
 screen_print_tab_setup()
-embroidery_tab_setup()
 
 tab_control.pack(expand=True, fill="both")
 
@@ -483,17 +492,11 @@ read_data()
 # ---------- START CACULATIONS FOR CURRENT TAB ---------- #
 def on_tab_change(event):
     global screen_print_calc_flag
-    global embroidery_calc_flag
     tab = event.widget.tab('current')['text']
     if tab == 'Home':
         screen_print_calc_flag = False
-        embroidery_calc_flag = False
     elif tab == 'Screen Printing':
         screen_print_calc_flag = True
-        embroidery_calc_flag = False
-    elif tab == 'Embroidery':
-        screen_print_calc_flag = False
-        embroidery_calc_flag = True
 
 tab_control.bind('<<NotebookTabChanged>>', on_tab_change)
 
