@@ -342,7 +342,7 @@ def home_tab_setup():
 
     # place objects
     image.place(x=(920/2) - (900/2), y = 25)
-    text.place(x = 55, y = 567)
+    text.place(x = 130, y = 567)
 
 def screen_print_tab_setup():
     # ----- LOCAL VARRAIBELS ----- #
