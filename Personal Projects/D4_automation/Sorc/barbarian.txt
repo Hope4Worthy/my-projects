@@ -1,0 +1,36 @@
+*-------------------*
+| Updated Barbarian |
+*-------------------*
+
+*-----*----------------------------------------------------*-------*----------------*-------------*-------------*
+| Lvl | Features                                           | Rages | Exploits Known | Exploit Die | Expoit Dice |
+|-----|----------------------------------------------------|-------|----------------|-------------|-------------|
+| 1   | Rage, Unarmored Defense                            |   2   |       -        |     ---     |      ---    |
+| 2   | Danger Sense, Savage Exploits                      |   2   |       2        |     1d4     |       2     |
+| 3   | Subclass Feature                                   |   3   |       2        |     1d4     |       2     |
+| 4   | ASI                                                |   3   |       2        |     1d6     |       2     |
+| 5   | Extra Attack, Reckless Attack, Fast Movement       |   3   |       3        |     1d6     |       3     |
+| 6   | Subclass Feature                                   |   3   |       3        |     1d6     |       3     |
+| 7   | Feral Instincts                                    |   4   |       4        |     1d6     |       3     |
+| 8   | ASI                                                |   4   |       4        |     1d6     |       3     |
+| 9   | Brutal Strike                                      |   4   |       5        |     1d6     |       3     |
+| 10  | Subclass Feature                                   |   4   |       5        |     1d6     |       3     |
+| 11  | Relentless Rage, Critical Strike (exploit on crit) |   4   |       6        |     1d8     |       4     |
+| 12  | ASI                                                |   5   |       6        |     1d8     |       4     |
+| 13  | Improved Brutal Strike                             |   5   |       7        |     1d8     |       4     |
+| 14  | Subclass Feature                                   |   5   |       7        |     1d8     |       4     |
+| 15  | Persistent Rage                                    |   5   |       7        |     1d8     |       4     |
+| 16  | ASI                                                |   5   |       7        |     1d8     |       4     |
+| 17  | Improved Brutal Strike                             |   6   |       8        |     1d10    |       5     |
+| 18  | Indomitable Might                                  |   6   |       8        |     1d10    |       5     |
+| 19  | ASI                                                |   6   |       8        |     1d10    |       5     |
+| 20  | Primal Champion                                    |   U   |       8        |     1d10    |       5     |
+*-----*----------------------------------------------------*-------*----------------*-------------*-------------*
+
+*-------------------------------------------------------------------------------*
+| you can choose a number of resistances equal to prof. mod to add to your rage |
+| at level 16 and 19 you can upgrade one of your resistances to an immunity     |
+| rage damage is equal to prof. mod                                             |
+| you regain your rages on a short rest                                         |
+| tou can use your bonus action to extend rage time                             |
+*-------------------------------------------------------------------------------*

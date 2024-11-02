@@ -148,7 +148,7 @@ def recognition_loop():
         os.system('cls')
     source = screenshot()
     flag_imbument = imbument_recognition(source)
-    flag_dark_shade = dark_shade_recognition(source)
+    flag_dark_shade = False #dark_shade_recognition(source)
     cast(flag_imbument, flag_dark_shade)
 
     t2 = cv.getTickCount()
