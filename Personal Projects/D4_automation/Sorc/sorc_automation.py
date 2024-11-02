@@ -13,7 +13,6 @@ debug_val = False
 
 root = Tk()
 root.geometry('%dx%d+%d+%d' % (160, 40, 5120, 0))
-root.geometry("160x40")
 root.overrideredirect(True)
 root.attributes('-topmost',True)
 
@@ -26,29 +25,7 @@ t.pack()
 toggle_flag = False
 mouse_flag = False
 
-uc_orig = [104, 55, 44]
-ls_orig = [113, 57, 44]
-ib_orig = [111, 86, 37]
-ia_orig = [119, 97, 44]
-fs_orig = [35, 63, 104]
-
-damage_buff_orig = cv.imread('/home/brantley/Documents/my-projects/Personal Projects/D4_automation/Sorc/damage_buff.png', cv.IMREAD_GRAYSCALE)
-
 keyboard = pynput.keyboard.Controller()
-
-uc_key = '1'
-ls_key = '2'
-ib_key = '3'
-ia_key = '4'
-fs_key = '5'
-
-uc_color = [0,0,0]
-ls_color = [0,0,0]
-ib_color = [0,0,0]
-ia_color = [0,0,0]
-fs_color = [0,0,0]
-buff_source = Image
-
 
 class RepeatedTimer(object):
     def __init__(self, interval, function, *args, **kwargs):
@@ -74,9 +51,137 @@ class RepeatedTimer(object):
         self._timer.cancel()
         self.is_running = False
 
+class color_skill_watcher(object):
+
+    global keyboard
+    global toggle_flag
+    global mouse_flag
+
+    def __init__(self, key, monitor_coordinates, source_color, interval, threshold, *args, **kwargs):
+        self.cast_key = key
+        self.monitor = monitor_coordinates
+        self.orig = source_color
+        self.interval = interval
+        self.threshold = threshold
+        self.args = args
+        self.kwargs = kwargs
+
+        self.timer = None
+
+    def _run(self):
+        with mss() as sct:
+            img = sct.grab(self.monitor)
+        avg_color_per_row = np.average(img, axis=0)
+        avg_colors = np.average(avg_color_per_row, axis=0)
+        color = np.array(avg_colors, dtype=np.uint8)[:-1]
+
+        result = np.sum(color - self.orig)
+
+        if result <= self.threshold and toggle_flag and mouse_flag:
+            keyboard.tap(self.cast_key)
+
+    def start(self):
+        if self.timer == None:
+            self.timer = RepeatedTimer(self.interval, self._run)
+        self.timer.start()
+    
+    def stop(self):
+        if self.timer != None:
+            self.timer.stop()
+
+class hybrid_skill_watcher(object):
+    
+    global keyboard
+    global toggle_flag
+    global mouse_flag
+
+    def __init__(self, key, color_monitor_coordinates, img_monitor_coordinates, source_color, source_img_path, interval, color_threshold, img_threshold, mode, *args, **kwargs):
+        self.cast_key = key
+        self.colorMonitor = color_monitor_coordinates
+        self.imgMonitor = img_monitor_coordinates
+        self.origColor = source_color
+        self.origImg = cv.imread(source_img_path, cv.IMREAD_GRAYSCALE)
+
+        self.interval = interval
+        self.colorThreshold = color_threshold
+        self.imageThreshold = img_threshold
+        self.mode = mode # 0 for img_result <= threshold, 1 for img_result >= threshold
+        self.args = args
+        self.kwargs = kwargs
+
+        self.timer = None
+
+    def _run(self):
+        with mss() as sct:
+            color_img = sct.grab(self.colorMonitor)
+            img_img = cv.cvtColor(np.asarray(sct.grab(self.imgMonitor))[:-1], cv.COLOR_RGB2GRAY)
+
+        avg_color_per_row = np.average(color_img, axis=0)
+        avg_colors = np.average(avg_color_per_row, axis=0)
+        color = np.array(avg_colors, dtype=np.uint8)[:-1]
+
+        color_result = np.sum(color - self.origColor)
+
+        buff_result = cv.matchTemplate(self.origImg, img_img, cv.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(buff_result)
+
+        if self.mode == 0:
+            if color_result <= self.colorThreshold and max_val <= self.imageThreshold and toggle_flag and mouse_flag:
+                keyboard.tap(self.cast_key)
+        else:
+            if color_result <= self.colorThreshold and max_val >= self.imageThreshold and toggle_flag and mouse_flag:
+                keyboard.tap(self.cast_key)
+
+    def start(self):
+        if self.timer == None:
+            self.timer = RepeatedTimer(self.interval, self._run)
+        self.timer.start()
+    
+    def stop(self):
+        if self.timer != None:
+            self.timer.stop()
+
+class img_skill_watcher(object):
+    global keyboard
+    global toggle_flag
+    global mouse_flag
+
+    def __init__(self, key, monitor_coordinates, source_img_path, interval, img_threshold, mode, *args, **kwargs):
+        self.cast_key = key
+        self.monitor = monitor_coordinates
+        self.orig = cv.imread(source_img_path, cv.IMREAD_GRAYSCALE)
+        self.interval = interval
+        self.threshold = img_threshold
+        self.mode = mode # 0 for result <= threshold, 1 for result >= threshold
+        self.args = args
+        self.kwargs = kwargs
+
+        self.timer = None
+
+    def _run(self):
+        with mss() as sct:
+            img_img = cv.cvtColor(np.asarray(sct.grab(self.monitor))[:-1], cv.COLOR_RGB2GRAY)
+
+        result = cv.matchTemplate(self.orig, img_img, cv.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv.minMaxLoc(result)
+
+        if self.mode == 0:
+            if max_val <= self.threshold and toggle_flag and mouse_flag:
+                keyboard.tap(self.cast_key)
+        else:
+            if max_val >= self.threshold and toggle_flag and mouse_flag:
+                keyboard.tap(self.cast_key)
+
+    def start(self):
+        if self.timer == None:
+            self.timer = RepeatedTimer(self.interval, self._run)
+        self.timer.start()
+    
+    def stop(self):
+        if self.timer != None:
+            self.timer.stop()
+
 def start():
-    sc_timer.start()
-    sleep(0.05)
     uc_timer.start()
     ls_timer.start()
     ib_timer.start()
@@ -84,7 +189,6 @@ def start():
     fs_timer.start()
 
 def stop():
-    sc_timer.stop()
     uc_timer.stop()
     ls_timer.stop()
     ib_timer.stop()
@@ -110,15 +214,6 @@ def quit():
     root.quit()
     os._exit(0)
 
-def get_color(img):
-    avg_color_per_row = np.average(img, axis=0)
-    avg_colors = np.average(avg_color_per_row, axis=0)
-    int_averages = np.array(avg_colors, dtype=np.uint8)
-    return int_averages
-
-def get_diff(color1, color2):
-    return np.sum(color1 - color2)
-
 def on_click(x, y, button, pressed):
     global mouse_flag
 
@@ -128,102 +223,13 @@ def on_click(x, y, button, pressed):
         else:
             mouse_flag = False
 
-def screenshot():
-    global uc_color
-    global ls_color
-    global ib_color
-    global ia_color
-    global fs_color
-    global buff_source
+buff_path = '/home/brantley/Documents/my-projects/Personal Projects/D4_automation/Sorc/damage_buff.png'
 
-    with mss() as sct:
-        uc_monitor = {"top": 1300, "left": 5593, "width": 80, "height": 80}
-        ls_monitor = {"top": 1300, "left": 5675, "width": 80, "height": 80}
-        ib_monitor = {"top": 1300, "left": 5757, "width": 80, "height": 80}
-        ia_monitor = {"top": 1300, "left": 5839, "width": 80, "height": 80}
-        fs_monitor = {"top": 1300, "left": 6003, "width": 80, "height": 80}
-        buff_monitor = {"top": 1110, "left": 5585, "width": 458, "height": 120}
-
-        uc_color = get_color(sct.grab(uc_monitor))[:-1]
-        ls_color = get_color(sct.grab(ls_monitor))[:-1]
-        ib_color = get_color(sct.grab(ib_monitor))[:-1]
-        ia_color = get_color(sct.grab(ia_monitor))[:-1]
-        fs_color = get_color(sct.grab(fs_monitor))[:-1]
-        buff_source = cv.cvtColor(np.asarray(sct.grab(buff_monitor))[:-1], cv.COLOR_RGB2GRAY)
-    
-    if debug_val:
-        os.system('clear')
-
-def uc_recognition():
-    threshold = 25
-
-    result = get_diff(uc_orig, uc_color)
-
-    if debug_val:
-        print("UC Value:", result)
-
-    if result <= threshold and mouse_flag:
-        keyboard.tap(uc_key)
-
-def ls_recognition():
-    threshold = 25
-
-    result = get_diff(ls_orig, ls_color)
-
-    if debug_val:
-        print("LS Value:", result)
-
-    if result <= threshold and mouse_flag:
-        keyboard.tap(ls_key)
-
-def ib_recognition():
-    threshold = 25
-
-    result = get_diff(ib_orig, ib_color)
-
-    if debug_val:
-        print("IB Value:", result)
-
-    if result <= threshold and mouse_flag:
-        keyboard.tap(ib_key)
-
-def ia_recognition():
-    threshold = 25
-
-    result = get_diff(ia_orig, ia_color)
-
-    if debug_val:
-        print("IA Value:", result)
-
-    if result <= threshold and mouse_flag:
-        keyboard.tap(ia_key)
-
-def fs_recognition():
-    buff_threshold = 0.70
-    color_threshold = 25
-
-    buff_result = cv.matchTemplate(buff_source, damage_buff_orig, cv.TM_CCOEFF_NORMED)
-    min_val, max_val, min_loc, max_loc = cv.minMaxLoc(buff_result)
-
-    color_result = get_diff(fs_orig, fs_color)
-
-    if debug_val:
-        print("FS Value:", color_result)
-        print("Buff Value:", max_val)
-
-    if max_val <= buff_threshold and color_result <= color_threshold and mouse_flag:
-        keyboard.tap(fs_key)
-
-delay_time = 0.25
-sc_timer = RepeatedTimer(delay_time, screenshot)
-uc_timer = RepeatedTimer(delay_time, uc_recognition)
-ls_timer = RepeatedTimer(delay_time, ls_recognition)
-ib_timer = RepeatedTimer(delay_time, ib_recognition)
-ia_timer = RepeatedTimer(delay_time, ia_recognition)
-fs_timer = RepeatedTimer(delay_time, fs_recognition)
-
-start()
-stop()
+uc_timer = color_skill_watcher('1', {"top": 1300, "left": 5593, "width": 80, "height": 80}, [104, 55, 44], 0.25, 25)
+ls_timer = color_skill_watcher('2', {"top": 1300, "left": 5675, "width": 80, "height": 80}, [113, 57, 44], 0.25, 25)
+ib_timer = color_skill_watcher('3', {"top": 1300, "left": 5757, "width": 80, "height": 80}, [111, 86, 37], 0.25, 25)
+ia_timer = color_skill_watcher('4', {"top": 1300, "left": 5839, "width": 80, "height": 80}, [119, 97, 44], 0.25, 25)
+fs_timer = hybrid_skill_watcher('5', {"top": 1300, "left": 6003, "width": 80, "height": 80}, {"top": 1110, "left": 5585, "width": 458, "height": 120}, [35, 63, 104], buff_path, 0.25, 25, 0.70, 0)
 
 mouse_listner = pynput.mouse.Listener(on_click=on_click)
 hotkey_toggle = pynput.keyboard.GlobalHotKeys({'<alt>+]': toggle})
