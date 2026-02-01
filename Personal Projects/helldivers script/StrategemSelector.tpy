@@ -62,11 +62,27 @@ def start_ui():
 
     root = tk.Tk()
     root.title("Strategem Selector")
-    root.geometry("520x300")
+    root.geometry("550x360")
     root.resizable(False, False)
 
     status_label = tk.Label(root, font=("Arial", 14))
-    status_label.pack(pady=10)
+    status_label.pack(pady=8)
+
+    # --- Loadout selector ---
+    loadout_var = tk.StringVar()
+    loadout_box = ttk.Combobox(
+        root, textvariable=loadout_var,
+        values=list(loadouts.keys()),
+        state="readonly", width=25
+    )
+    loadout_box.pack(pady=5)
+
+    # --- Determine initial loadout (first one) ---
+    first_loadout_name = list(loadouts.keys())[0]
+    loadout_box.set(first_loadout_name)  # default selection
+
+    # ---------- Slots ----------
+    slot_frames = []
 
     def make_slot(parent, index):
         frame = tk.Frame(parent)
@@ -74,7 +90,7 @@ def start_ui():
 
         tk.Label(frame, text=f"Slot {index + 1}", width=8).grid(row=0, column=0)
 
-        group_var = tk.StringVar(value=list(GROUPS.keys())[0])
+        group_var = tk.StringVar()
         strat_var = tk.StringVar()
 
         group_box = ttk.Combobox(
@@ -90,9 +106,10 @@ def start_ui():
         strat_box.grid(row=0, column=2, padx=5)
 
         def update_strategems(*_):
-            names = get_names(group_var.get())
+            group = group_var.get()
+            names = [s[-1] for s in GROUPS[group]]
             strat_box["values"] = names
-            if names:
+            if strat_var.get() not in names:
                 strat_var.set(names[0])
                 set_loadout()
 
@@ -107,15 +124,35 @@ def start_ui():
         group_var.trace_add("write", update_strategems)
         strat_var.trace_add("write", set_loadout)
 
-        update_strategems()
+        slot_frames.append((group_var, strat_var))
+        return group_var, strat_var
 
-    slots = tk.Frame(root)
-    slots.pack(pady=10)
+    slots_container = tk.Frame(root)
+    slots_container.pack(pady=10)
 
     for i in range(4):
-        make_slot(slots, i)
+        make_slot(slots_container, i)
 
-    tk.Button(root, text="Toggle Active", command=on_active_toggle, width=25).pack(pady=10)
+    # ---------- Function to switch loadouts ----------
+    def loadout_selected(*_):
+        name = loadout_var.get()
+        if name not in loadouts:
+            return
+        for i, (g, s) in enumerate(loadouts[name]):
+            group_var, strat_var = slot_frames[i]
+            if g in GROUPS:
+                group_var.set(g)
+                # Set strategem only if valid in group
+                if s in [x[-1] for x in GROUPS[g]]:
+                    strat_var.set(s)
+                else:
+                    strat_var.set(GROUPS[g][0][-1])
+
+    loadout_var.trace_add("write", loadout_selected)
+    loadout_selected()  # initialize first loadout
+
+    # ---------- Buttons ----------
+    tk.Button(root, text="Toggle Active", command=on_active_toggle, width=25).pack(pady=8)
     tk.Button(root, text="Quit", command=root.destroy, width=25).pack()
 
     update_ui()

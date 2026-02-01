@@ -123,6 +123,29 @@ GROUPS = {
     "vehicle": vehicle
 }
 
+# Predefined loadouts
+loadouts = {
+    "Bots": [
+        ("eagle", "airstrike"),
+        ("orbital", "railcannonStrike"),
+        ("support", "railgun"),
+        ("backpack", "personalShield")
+    ],
+    "Bugs": [
+        ("eagle", "airstrike"),
+        ("orbital", "railcannonStrike"),
+        ("orbital", "precisionStrike"),
+        ("backpack", "personalShield")
+    ],
+    "Defense": [
+        ("sentry", "autocannon"),
+        ("orbital", "railcannonStrike"),
+        ("support", "quasarCannon"),
+        ("backpack", "personalShield")
+    ]
+}
+
+
 none = []
 
 def find_strat(group, name):
