@@ -88,9 +88,9 @@ eagle_napalmAirstrike   = [up, right, down, up]
 eagle_smokeStrike       = [up, right, up, down]
 eagle_strafingRun       = [up, right, right]
 
-vehicle_emancipatorExosuit = [left, down, right, up, left, down, up]
-vehicle_fastReconVehicle = [left, down, right, down, right, down, up]
-vehicle_patriotExosuit     = [left, down, right, up, left, down, down]
+vehicle_emancipatorExosuit  = [left, down, right, up, left, down, up]
+vehicle_fastReconVehicle    = [left, down, right, down, right, down, up]
+vehicle_patriotExosuit      = [left, down, right, up, left, down, down]
 
 mission_reinforce       = [up, down, right, left, up]
 mission_resupply        = [down, down, up, right]
