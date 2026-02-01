@@ -130,3 +130,6 @@ def find_strat(group, name):
         if sub_array and sub_array[-1] == name:
             return sub_array
     return None
+
+def get_names(group_name):
+    return [s[-1] for s in GROUPS[group_name]]

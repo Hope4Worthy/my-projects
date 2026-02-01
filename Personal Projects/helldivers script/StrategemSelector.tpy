@@ -57,9 +57,6 @@ def on_press(key):
 def update_ui():
     status_label.config(text="Status: ACTIVE" if flag else "Status: INACTIVE")
 
-def get_names(group_name):
-    return [s[-1] for s in GROUPS[group_name]]
-
 def start_ui():
     global status_label
 
