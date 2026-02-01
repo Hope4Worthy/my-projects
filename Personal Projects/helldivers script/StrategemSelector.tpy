@@ -1,0 +1,135 @@
+import pynput
+import time
+import os
+import tkinter as tk
+from tkinter import ttk
+from stratagem_list import *
+
+# ---------- GLOBAL STATE ---------- #
+
+current_loadout = [None, None, None, None]
+flag = True
+key_delay = 0.02
+
+input = pynput.keyboard.Controller()
+
+# ---------- CORE FUNCTIONS ---------- #
+
+def execute(strategem):
+    if not strategem:
+        return
+
+    input.press(pynput.keyboard.Key.alt_l)
+    for key in strategem[:-1]:
+        time.sleep(key_delay)
+        input.press(key)
+        time.sleep(key_delay)
+        input.release(key)
+    input.release(pynput.keyboard.Key.alt_l)
+
+def on_active_toggle():
+    global flag
+    flag = not flag
+    update_ui()
+
+# ---------- KEY LISTENER ---------- #
+
+def on_press(key):
+    if not flag:
+        return
+
+    keymap = {
+        pynput.keyboard.Key.home: 0,
+        pynput.keyboard.Key.end: 1,
+        pynput.keyboard.Key.page_up: 2,
+        pynput.keyboard.Key.page_down: 3,
+    }
+
+    if key in keymap:
+        execute(current_loadout[keymap[key]])
+    elif key == pynput.keyboard.Key.insert:
+        execute(mission_resupply)
+    elif key == pynput.keyboard.Key.delete:
+        execute(mission_reinforce)
+
+# ---------- TKINTER UI ---------- #
+
+def update_ui():
+    status_label.config(text="Status: ACTIVE" if flag else "Status: INACTIVE")
+
+def get_names(group_name):
+    return [s[-1] for s in GROUPS[group_name]]
+
+def start_ui():
+    global status_label
+
+    root = tk.Tk()
+    root.title("Strategem Selector")
+    root.geometry("520x300")
+    root.resizable(False, False)
+
+    status_label = tk.Label(root, font=("Arial", 14))
+    status_label.pack(pady=10)
+
+    def make_slot(parent, index):
+        frame = tk.Frame(parent)
+        frame.pack(pady=5, fill="x")
+
+        tk.Label(frame, text=f"Slot {index + 1}", width=8).grid(row=0, column=0)
+
+        group_var = tk.StringVar(value=list(GROUPS.keys())[0])
+        strat_var = tk.StringVar()
+
+        group_box = ttk.Combobox(
+            frame, textvariable=group_var,
+            values=list(GROUPS.keys()), state="readonly", width=12
+        )
+        group_box.grid(row=0, column=1, padx=5)
+
+        strat_box = ttk.Combobox(
+            frame, textvariable=strat_var,
+            state="readonly", width=30
+        )
+        strat_box.grid(row=0, column=2, padx=5)
+
+        def update_strategems(*_):
+            names = get_names(group_var.get())
+            strat_box["values"] = names
+            if names:
+                strat_var.set(names[0])
+                set_loadout()
+
+        def set_loadout(*_):
+            group = GROUPS[group_var.get()]
+            name = strat_var.get()
+            for strat in group:
+                if strat[-1] == name:
+                    current_loadout[index] = strat
+                    return
+
+        group_var.trace_add("write", update_strategems)
+        strat_var.trace_add("write", set_loadout)
+
+        update_strategems()
+
+    slots = tk.Frame(root)
+    slots.pack(pady=10)
+
+    for i in range(4):
+        make_slot(slots, i)
+
+    tk.Button(root, text="Toggle Active", command=on_active_toggle, width=25).pack(pady=10)
+    tk.Button(root, text="Quit", command=root.destroy, width=25).pack()
+
+    update_ui()
+    root.mainloop()
+
+# ---------- STARTUP ---------- #
+
+listener = pynput.keyboard.Listener(on_press=on_press)
+hotkey_toggle = pynput.keyboard.GlobalHotKeys({'<ctrl>+q': on_active_toggle})
+
+listener.start()
+hotkey_toggle.start()
+
+start_ui()

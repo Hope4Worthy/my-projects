@@ -5,95 +5,128 @@ down = pynput.keyboard.Key.down
 left = pynput.keyboard.Key.left
 right = pynput.keyboard.Key.right
 
-support_airburstRocketLauncher  = [down, up, up, left, right, "airburstRocketLauncher"]
-support_antiMaterialRifle       = [down, left, right, up, down, "antiMaterialRifle"]
-support_arcThrower              = [down, right, down, up, left, left, "arcThrower"]
-support_autocannon              = [down, left, down, up, up, right, "autocannon"]
-suuport_commando                = [down, left, up, down, right, "commando"]
-support_deEscalator             = [down, right, up, left, right, "deEscalator"]
-support_defoliationTool         = [down, left, right, right, down, "defoliationTool"]
-support_epoch                   = [down, left, up, left, right, "epoch"]
-support_expendableAntiTank      = [down, down, left, up, right, "expendableAntiTank"]
-support_expendableNapalm        = [down, down, left, up, left, "expendableNapalm"]
-support_flamethrower            = [down, left, up, down, up, "flamethrower"]
-support_grenadeLauncher         = [down, left, up, left, down, "grenadeLauncher"]
-support_heavyMachineGun         = [down, left, up, down, down, "heavyMachineGun"]
-support_laserCannon             = [down, left, up, left, down, "laserCannon"]
-support_machineGun              = [down, left, down, up, right, "machineGun"]
-support_maxigun                 = [down, left, right, down, up, up, "maxigun"]
-support_oneTrueFlag             = [down, left, right, right, up, "oneTrueFlag"]
-support_quasarCannon            = [down, down, up, left, right, "quasarCannon"]
-support_railgun                 = [down, right, down, up, left, right, "railgun"]
-support_recoillessRifle         = [down, left, right, right, left, "recoillessRifle"]
-support_soloSilo                = [down, up, right, down, down, "soloSilo"]
-support_spear                   = [down, down, up, down, down, "spear"]
-supprot_spearGun                = [down, right, down, left, up, right, "spearGun"]
-support_stalwart                = [down, left, down, up, up, left, "stalwart"]
-support_sterilizer              = [down, left, up, down, left, "sterilizer"]
-support_waspLauncher            = [down, down, up, down, right, "waspLauncher"]
+support = [
+  [down, up, up, left, right, "airburstRocketLauncher"],
+  [down, left, right, up, down, "antiMaterialRifle"],
+  [down, right, down, up, left, left, "arcThrower"],
+  [down, left, down, up, up, right, "autocannon"],
+  [down, left, up, down, right, "commando"],
+  [down, right, up, left, right, "deEscalator"],
+  [down, left, right, right, down, "defoliationTool"],
+  [down, left, up, left, right, "epoch"],
+  [down, down, left, up, right, "expendableAntiTank"],
+  [down, down, left, up, left, "expendableNapalm"],
+  [down, left, up, down, up, "flamethrower"],
+  [down, left, up, left, down, "grenadeLauncher"],
+  [down, left, up, down, down, "heavyMachineGun"],
+  [down, left, up, left, down, "laserCannon"],
+  [down, left, down, up, right, "machineGun"],
+  [down, left, right, down, up, up, "maxigun"],
+  [down, left, right, right, up, "oneTrueFlag"],
+  [down, down, up, left, right, "quasarCannon"],
+  [down, right, down, up, left, right, "railgun"],
+  [down, left, right, right, left, "recoillessRifle"],
+  [down, up, right, down, down, "soloSilo"],
+  [down, down, up, down, down, "spear"],
+  [down, right, down, left, up, right, "spearGun"],
+  [down, left, down, up, up, left, "stalwart"],
+  [down, left, up, down, left, "sterilizer"],
+  [down, down, up, down, right, "waspLauncher"]
+]
 
-backpack_ballisticShield    = [down, left, down, down, up, left, "ballisticShield"]
-backpack_c4Pack             = [down, right, up, up, right, up, "c4Pack"]
-backpack_directionalShield  = [down, up, left, right, up, up, "directionalShield"]
-backpack_guardDog           = [down, up, left, up, right, down, "guardDog"]
-backpack_guardDogDogBreath  = [down, up, left, up, right, up, "guardDogDogBreath"]
-backpack_guardDogHotDog     = [down, up, left, up, left, left, "guardDogHotDog"]
-backpack_guardDogK9         = [down, up, left, up, right, left, "guardDogK9"]
-backpack_guardDogRover      = [down, up, left, up, right, right, "guardDogRover"]
-backpack_hoverPack          = [down, up, up, down, left, right, "hoverPack"]
-backpack_jumpPack           = [down, up, up, down, up, "jumpPack"]
-backpack_personalShield     = [down, up, left, right, left, right, "personalShield"]
-backpack_portableHellbomb   = [down, right, up, up, up, "portableHellbomb"]
-backpack_supplyPack         = [down, left, down, up, up, down, "supplyPack"]
-backpack_warpPack           = [down, left, right, down, left, right, "warpPack"]
+backpack = [
+  [down, left, down, down, up, left, "ballisticShield"],
+  [down, right, up, up, right, up, "c4Pack"],
+  [down, up, left, right, up, up, "directionalShield"],
+  [down, up, left, up, right, down, "guardDog"],
+  [down, up, left, up, right, up, "guardDogDogBreath"],
+  [down, up, left, up, left, left, "guardDogHotDog"],
+  [down, up, left, up, right, left, "guardDogK9"],
+  [down, up, left, up, right, right, "guardDogRover"],
+  [down, up, up, down, left, right, "hoverPack"],
+  [down, up, up, down, up, "jumpPack"],
+  [down, up, left, right, left, right, "personalShield"],
+  [down, right, up, up, up, "portableHellbomb"],
+  [down, left, down, up, up, down, "supplyPack"],
+  [down, left, right, down, left, right, "warpPack"]
+]
 
-defensive_antiTankEmplacement   = [down, up, left, right, right, right, "antiTankEmplacement"]
-defensive_grenadierBattlement   = [down, right, down, left, right, "grenadierBattlement"]
-defensive_hmgEmplacment         = [down, up, left, right, right, left, "hmgEmplacment"]
-defensive_shieldGenerator       = [down, down, left, right, left, right, "shieldGenerator"]
+defensive = [
+  [down, up, left, right, right, right, "antiTankEmplacement"],
+  [down, right, down, left, right, "grenadierBattlement"],
+  [down, up, left, right, right, left, "hmgEmplacment"],
+  [down, down, left, right, left, right, "shieldGenerator"]
+]
 
-sentry_autocannon   = [down, up, right, up, left, up, "autocannon"]
-sentry_emsMortar    = [down, up, right, down, right, "emsMortar"]
-sentry_flame        = [down, up, right, down, up, up, "flame"]
-sentry_gatling      = [down, up, right, left, "gatling"]
-sentry_laser        = [down, up, right, down, up, right, "laser"]
-sentry_machineGun   = [down, up, right, right, up, "machineGun"]
-sentry_mortar       = [down, up, right, right, down, "mortar"]
-sentry_rocket       = [down, up, right, right, left, "rocket"]
-sentry_teslaTower   = [down, up, right, up, left, down, "teslaTower"]
+sentry = [
+  [down, up, right, up, left, up, "autocannon"],
+  [down, up, right, down, right, "emsMortar"],
+  [down, up, right, down, up, up, "flame"],
+  [down, up, right, left, "gatling"],
+  [down, up, right, down, up, right, "laser"],
+  [down, up, right, right, up, "machineGun"],
+  [down, up, right, right, down, "mortar"],
+  [down, up, right, right, left, "rocket"],
+  [down, up, right, up, left, down, "teslaTower"]
+]
 
-mine_antiPersonnel  = [down, left, up, right, "antiPersonnel"]
-mine_antiTank       = [down, left, up, up, "antiTank"]
-mine_gas            = [down, left, left, right, "gas"]
-mine_incindiary     = [down, left, left, down, "incindiary"]
+mine = [
+  [down, left, up, right, "antiPersonnel"],
+  [down, left, up, up, "antiTank"],
+  [down, left, left, right, "gas"],
+  [down, left, left, down, "incindiary"]
+]
 
-orbital_120mmBarrage        = [right, right, down, left, right, down, "120mmBarrage"]
-orbital_380mmBarrage        = [right, down, up, up, left, down, down, "380mmBarrage"]
-orbital_airburstStrike      = [right, right, right, "airburstStrike"]
-orbital_emsStrike           = [right, right, left, down, "emsStrike"]
-orbital_gasStrike           = [right, right, down, right, "gasStrike"]
-orbital_gatlingBarrage      = [right, down, left, up, up, "gatlingBarrage"]
-orbital_laser               = [right, down, up, right, down, "laser"]
-orbital_napalm              = [right, right, down, left, right, up, "napalm"]
-orbital_precisionStrike     = [right, right, up, "precisionStrike"]
-orbital_railcannonStrike    = [right, up, down, down, right, "railcannonStrike"]
-orbital_smokeStrike         = [right, right, down, up, "smokeStrike"]
-orbital_walkingBarrage      = [right, down, right, down, right, down, "walkingBarrage"]
+orbital = [
+  [right, right, down, left, right, down, "120mmBarrage"],
+  [right, down, up, up, left, down, down, "380mmBarrage"],
+  [right, right, right, "airburstStrike"],
+  [right, right, left, down, "emsStrike"],
+  [right, right, down, right, "gasStrike"],
+  [right, down, left, up, up, "gatlingBarrage"],
+  [right, down, up, right, down, "laser"],
+  [right, right, down, left, right, up, "napalm"],
+  [right, right, up, "precisionStrike"],
+  [right, up, down, down, right, "railcannonStrike"],
+  [right, right, down, up, "smokeStrike"],
+  [right, down, right, down, right, down, "walkingBarrage"]
+]
 
-eagle_110mmRocketPods   = [up, down, up, left, "110mmRocketPods"]
-eagle_500kgBomb         = [up, right, down, down, down, "500kgBomb"]
-eagle_airstrike         = [up, right, down, right, "airstrike"]
-eagle_clusterBomb       = [up, right, down, down, right, "clusterBomb"]
-eagle_napalmAirstrike   = [up, right, down, up, "napalmAirstrike"]
-eagle_smokeStrike       = [up, right, up, down, "smokeStrike"]
-eagle_strafingRun       = [up, right, right, "strafingRun"]
+eagle = [
+  [up, down, up, left, "110mmRocketPods"],
+  [up, right, down, down, down, "500kgBomb"],
+  [up, right, down, right, "airstrike"],
+  [up, right, down, down, right, "clusterBomb"],
+  [up, right, down, up, "napalmAirstrike"],
+  [up, right, up, down, "smokeStrike"],
+  [up, right, right, "strafingRun"]
+]
 
-vehicle_emancipatorExosuit  = [left, down, right, up, left, down, up, "emancipatorExosuit"]
-vehicle_fastReconVehicle    = [left, down, right, down, right, down, up, "fastReconVehicle"]
-vehicle_patriotExosuit      = [left, down, right, up, left, down, down, "patriotExosuit"]
+vehicle = [
+  [left, down, right, up, left, down, up, "emancipatorExosuit"],
+  [left, down, right, down, right, down, up, "fastReconVehicle"],
+  [left, down, right, up, left, down, down, "patriotExosuit"]
+]
+
 
 mission_reinforce       = [up, down, right, left, up, "reinforce"]
 mission_resupply        = [down, down, up, right, "resupply"]
 
+GROUPS = {
+    "support": support,
+    "backpack": backpack,
+    "defensive": defensive,
+    "sentry": sentry,
+    "mine": mine,
+    "orbital": orbital,
+    "eagle": eagle,
+    "vehicle": vehicle
+}
 
 none = []
+
+def find_strat(group, name):
+    for sub_array in group_array:
+        if sub_array and sub_array[-1] == name:
+            return sub_array
+    return None
