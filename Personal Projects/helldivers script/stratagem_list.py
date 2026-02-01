@@ -32,7 +32,6 @@ support_stalwart                = [down, left, down, up, up, left]
 support_sterilizer              = [down, left, up, down, left]
 support_waspLauncher            = [down, down, up, down, right]
 
-
 backpack_ballisticShield    = [down, left, down, down, up, left]
 backpack_c4Pack             = [down, right, up, up, right, up]
 backpack_directionalShield  = [down, up, left, right, up, up]
