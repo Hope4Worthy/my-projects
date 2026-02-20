@@ -142,6 +142,12 @@ loadouts = {
         ("orbital", "railcannonStrike"),
         ("support", "quasarCannon"),
         ("backpack", "personalShield")
+    ],
+    "Commando": [
+        ("orbital", "laser"),
+        ("orbital", "railcannonStrike"),
+        ("support", "railgun"),
+        ("backpack", "personalShield")
     ]
 }
 
